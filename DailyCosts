@@ -1,0 +1,100 @@
+import tkinter as tk
+from tkinter import messagebox
+from PIL import Image, ImageTk
+
+
+# Load background image
+def load_background_image(path):
+    try:
+        image = Image.open(path)
+        return ImageTk.PhotoImage(image.resize((800, 500), Image.LANCZOS))
+    except Exception as e:
+        print(f"Error loading background image: {e}")
+        return None
+
+
+# Functions for calculations
+def total_balance(balance, costs):
+    daily_balance = balance - costs
+    return daily_balance
+
+
+def total_costs(market, gas, rent, bills):
+    costs = market + gas + rent + bills
+    return costs
+
+
+# Callback for processing balance
+def enter_balance(balance_entry, market_entry, gas_entry, rent_entry, bills_entry):
+    try:
+        # Read inputs
+        balance = float(balance_entry.get())
+        market = float(market_entry.get())
+        gas = float(gas_entry.get())
+        rent = float(rent_entry.get())
+        bills = float(bills_entry.get())
+
+        # Calculate costs and balance
+        costs = total_costs(market, gas, rent, bills)
+        remaining_balance = total_balance(balance, costs)
+
+        # Show result in a messagebox
+        messagebox.showinfo("Calculation Result",
+                            f"Total Costs: ${costs:.2f}\nRemaining Balance: ${remaining_balance:.2f}")
+    except ValueError:
+        messagebox.showerror("Input Error", "Please enter valid numeric values.")
+
+
+# GUI Setup
+root = tk.Tk()
+root.title("Daily Balance Calculator")
+root.geometry("800x500")
+
+# Background image
+bg_image = load_background_image("C:/Users/Attilas/Desktop/Bill/Matrix/MyProjects/EconomicDaily/backgroundec.webp")
+if bg_image:
+    bg_label = tk.Label(root, image=bg_image)
+    bg_label.place(relwidth=1, relheight=1)
+
+# Fonts
+label_font = ("Helvetica", 12)
+entry_font = ("Helvetica", 11)
+button_font = ("Helvetica", 12)
+
+# Container for centering
+container = tk.Frame(root, bg="lightblue", relief="solid", padx=20, pady=20)
+container.place(relx=0.5, rely=0.5, anchor="center")
+
+# Input fields
+tk.Label(container, text="Enter Balance:", font=label_font, bg="white").grid(row=0, column=0, sticky="e", pady=5, padx=10)
+balance_entry = tk.Entry(container, font=entry_font)
+balance_entry.grid(row=0, column=1, pady=5, padx=10)
+
+tk.Label(container, text="Market Costs:", font=label_font, bg="white").grid(row=1, column=0, sticky="e", pady=5, padx=10)
+market_entry = tk.Entry(container, font=entry_font)
+market_entry.grid(row=1, column=1, pady=5, padx=10)
+
+tk.Label(container, text="Gas Costs:", font=label_font, bg="white").grid(row=2, column=0, sticky="e", pady=5, padx=10)
+gas_entry = tk.Entry(container, font=entry_font)
+gas_entry.grid(row=2, column=1, pady=5, padx=10)
+
+tk.Label(container, text="Rent Costs:", font=label_font, bg="white").grid(row=3, column=0, sticky="e", pady=5, padx=10)
+rent_entry = tk.Entry(container, font=entry_font)
+rent_entry.grid(row=3, column=1, pady=5, padx=10)
+
+tk.Label(container, text="Bills Costs:", font=label_font, bg="white").grid(row=4, column=0, sticky="e", pady=5, padx=10)
+bills_entry = tk.Entry(container, font=entry_font)
+bills_entry.grid(row=4, column=1, pady=5, padx=10)
+
+# Submit button
+submit_btn = tk.Button(
+    container,
+    text="Calculate",
+    font=button_font,
+    bg="lightblue",
+    command=lambda: enter_balance(balance_entry, market_entry, gas_entry, rent_entry, bills_entry)
+)
+submit_btn.grid(row=5, column=0, columnspan=2, pady=20)
+
+# Start the GUI loop
+root.mainloop()
